@@ -1,7 +1,7 @@
 chapter SeCaV
 
 (*
-  Author: Jørgen Villadsen, DTU Compute, 2020
+  Author: Jørgen Villadsen, DTU Compute, 2021
   Contributors: Stefan Berghofer, Asta Halkjær From, Alexander Birch Jensen & Anders Schlichtkrull
 *)
 
@@ -140,7 +140,7 @@ lemmas GammaUni = sequent_calculus.intros(9)
 lemmas DeltaUni = sequent_calculus.intros(10)
 lemmas DeltaExi = sequent_calculus.intros(11)
 
-lemmas Neg = sequent_calculus.intros(12)
+lemmas NegNeg = sequent_calculus.intros(12)
 
 lemmas Ext = sequent_calculus.intros(13)
 

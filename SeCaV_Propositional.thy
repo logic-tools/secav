@@ -1,7 +1,7 @@
 chapter SeCaV_Propositional
 
 (*
-  Author: Jørgen Villadsen, DTU Compute, 2020
+  Author: Jørgen Villadsen, DTU Compute, 2021
   Contributors: Asta Halkjær From & Alexander Birch Jensen
 *)
 
@@ -9,35 +9,22 @@ section \<open>Sequent Calculus Verifier (SeCaV)\<close>
 
 theory SeCaV_Propositional imports SeCaV begin
 
-abbreviation \<open>P \<equiv> Pre 0 []\<close>
-
-abbreviation \<open>Q \<equiv> Pre 1 []\<close>
-
-abbreviation \<open>R \<equiv> Pre 2 []\<close>
-
 section \<open>Examples\<close>
 
 subsection \<open>Example 1\<close>
 
-proposition \<open>p \<longrightarrow> p\<close> by metis
+proposition \<open>p \<or> \<not> p\<close> by metis
 
 lemma \<open>\<tturnstile>
   [
-    Imp P P
+    Dis (Pre 0 []) (Neg (Pre 0 []))
   ]
   \<close>
 proof -
-  from AlphaImp have ?thesis if \<open>\<tturnstile>
+  from AlphaDis have ?thesis if \<open>\<tturnstile>
     [
-      Neg P,
-      P
-    ]
-    \<close>
-    using that by simp
-  with Ext have ?thesis if \<open>\<tturnstile>
-    [
-      P,
-      Neg P
+      Pre 0 [],
+      Neg (Pre 0 [])
     ]
     \<close>
     using that by simp
@@ -47,18 +34,18 @@ qed
 
 subsection \<open>Example 2\<close>
 
-proposition \<open>\<not> p \<longrightarrow> \<not> \<not> \<not> p\<close> by metis
+proposition \<open>p \<longrightarrow> \<not> \<not> p\<close> by metis
 
 lemma \<open>\<tturnstile>
   [
-    Imp (Neg P) (Neg (Neg (Neg P)))
+    Imp (Pre 0 []) (Neg (Neg (Pre 0 [])))
   ]
   \<close>
 proof -
   from AlphaImp have ?thesis if \<open>\<tturnstile>
     [
-      Neg (Neg P),
-      Neg (Neg (Neg P))
+      Neg (Pre 0 []),
+      Neg (Neg (Pre 0 []))
     ]
     \<close>
     using that by simp
@@ -72,28 +59,28 @@ proposition \<open>\<not> \<not> p \<longrightarrow> p\<close> by metis
 
 lemma \<open>\<tturnstile>
   [
-    Imp (Neg (Neg P)) P
+    Imp (Neg (Neg (Pre 0 []))) (Pre 0 [])
   ]
   \<close>
 proof -
   from AlphaImp have ?thesis if \<open>\<tturnstile>
     [
-      Neg (Neg (Neg P)),
-      P
+      Neg (Neg (Neg (Pre 0 []))),
+      Pre 0 []
     ]
     \<close>
     using that by simp
-  with Neg have ?thesis if \<open>\<tturnstile>
+  with NegNeg have ?thesis if \<open>\<tturnstile>
     [
-      Neg P,
-      P
+      Neg (Pre 0 []),
+      Pre 0 []
     ]
     \<close>
     using that by simp
   with Ext have ?thesis if \<open>\<tturnstile>
     [
-      P,
-      Neg P
+      Pre 0 [],
+      Neg (Pre 0 [])
     ]
     \<close>
     using that by simp
@@ -107,36 +94,36 @@ proposition \<open>p \<or> (p \<longrightarrow> q)\<close> by metis
 
 lemma \<open>\<tturnstile>
   [
-    Dis P (Imp P Q)
+    Dis (Pre 0 []) (Imp (Pre 0 []) (Pre 1 []))
   ]
   \<close>
 proof -
   from AlphaDis have ?thesis if \<open>\<tturnstile>
     [
-      P,
-      Imp P Q
+      Pre 0 [],
+      Imp (Pre 0 []) (Pre 1 [])
     ]
     \<close>
     using that by simp
   with Ext have ?thesis if \<open>\<tturnstile>
     [
-      Imp P Q,
-      P
+      Imp (Pre 0 []) (Pre 1 []),
+      Pre 0 []
     ]
     \<close>
     using that by simp
   with AlphaImp have ?thesis if \<open>\<tturnstile>
     [
-      Neg P,
-      Q,
-      P
+      Neg (Pre 0 []),
+      Pre 1 [],
+      Pre 0 []
     ]
     \<close>
     using that by simp
   with Ext have ?thesis if \<open>\<tturnstile>
     [
-      P,
-      Neg P
+      Pre 0 [],
+      Neg (Pre 0 [])
     ]
     \<close>
     using that by simp
@@ -150,59 +137,59 @@ proposition \<open>p \<and> q \<longrightarrow> r \<longrightarrow> p \<and> r\<
 
 lemma \<open>\<tturnstile>
   [
-    Imp (Con P Q) (Imp R (Con P R))
+    Imp (Con (Pre 0 []) (Pre 1 [])) (Imp (Pre 2 []) (Con (Pre 0 []) (Pre 2 [])))
   ]
   \<close>
 proof -
   from AlphaImp have ?thesis if \<open>\<tturnstile>
     [
-      Neg (Con P Q),
-      Imp R (Con P R)
+      Neg (Con (Pre 0 []) (Pre 1 [])),
+      Imp (Pre 2 []) (Con (Pre 0 []) (Pre 2 []))
     ]
     \<close>
     using that by simp
   with AlphaCon have ?thesis if \<open>\<tturnstile>
     [
-      Neg P,
-      Neg Q,
-      Imp R (Con P R)
+      Neg (Pre 0 []),
+      Neg (Pre 1 []),
+      Imp (Pre 2 []) (Con (Pre 0 []) (Pre 2 []))
     ]
     \<close>
     using that by simp
   with Ext have ?thesis if \<open>\<tturnstile>
     [
-      Imp R (Con P R),
-      Neg P
+      Imp (Pre 2 []) (Con (Pre 0 []) (Pre 2 [])),
+      Neg (Pre 0 [])
     ]
     \<close>
     using that by simp
   with AlphaImp have ?thesis if \<open>\<tturnstile>
     [
-      Neg R,
-      Con P R,
-      Neg P
+      Neg (Pre 2 []),
+      Con (Pre 0 []) (Pre 2 []),
+      Neg (Pre 0 [])
     ]
     \<close>
     using that by simp
   with Ext have ?thesis if \<open>\<tturnstile>
     [
-      Con P R,
-      Neg R,
-      Neg P
+      Con (Pre 0 []) (Pre 2 []),
+      Neg (Pre 2 []),
+      Neg (Pre 0 [])
     ]
     \<close>
     using that by simp
   with BetaCon have ?thesis if \<open>\<tturnstile>
     [
-      P,
-      Neg R,
-      Neg P
+      Pre 0 [],
+      Neg (Pre 2 []),
+      Neg (Pre 0 [])
     ]
     \<close> and \<open>\<tturnstile>
     [
-      R,
-      Neg R,
-      Neg P
+      Pre 2 [],
+      Neg (Pre 2 []),
+      Neg (Pre 0 [])
     ]
     \<close>
     using that by simp

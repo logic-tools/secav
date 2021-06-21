@@ -1,1 +1,1 @@
-# secav
+# Sequent Calculus Verifier (SeCaV)
