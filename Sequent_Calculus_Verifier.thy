@@ -4,7 +4,7 @@
 
 section \<open>Appendix: Completeness\<close>
 
-theory Sequent_Calculus_Verifier imports Sequent SeCaV begin
+theory Sequent_Calculus_Verifier imports Sequent1 SeCaV begin
 
 primrec from_tm and from_tm_list where
   \<open>from_tm (Var n) = FOL_Fitting.Var n\<close> |
